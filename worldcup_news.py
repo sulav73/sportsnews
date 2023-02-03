@@ -3,11 +3,11 @@ from bs4 import BeautifulSoup
 import sqlite3
 
 # Connect to the database
-conn = sqlite3.connect("worldup_articles.db")
+conn = sqlite3.connect("worldcup.db")
 cursor = conn.cursor()
 
 # Create the table to store the data
-cursor.execute("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, title TEXT, headers TEXT, contents TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS wc_article (id INTEGER PRIMARY KEY, title TEXT, headers TEXT, contents TEXT)")
 
 # Scrape the text data from the news article
 url = "https://olympics.com/en/news/fifa-world-cup-2022-records-and-stats"
@@ -23,10 +23,10 @@ content = ' '.join([p.text for p in paragraphs])
 
 # Store the data in the database
 try:
-    cursor.execute("ALTER TABLE articles ADD COLUMN contents TEXT")
+    cursor.execute("ALTER TABLE wc_article ADD COLUMN contents TEXT, headers TEXT")
 except sqlite3.OperationalError:
     pass
-cursor.execute("INSERT INTO articles (title, headers, contents) VALUES (?,?,?)", (title, ' '.join(headers), content))
+cursor.execute("INSERT INTO wc_article (title, headers, contents) VALUES (?,?,?)", (title, ' '.join(headers), content))
 
 # Close the connection
 conn.commit()
